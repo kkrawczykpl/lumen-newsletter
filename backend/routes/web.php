@@ -16,3 +16,11 @@
 $router->get('/', function () use ($router) {
     return $router->app->version();
 });
+
+$router->group(['prefix' => 'api'], function() use ($router) {
+    
+    // Signing in and out of the newsletter
+    $router->post('newsletter/sign-up', ['uses' => 'NewsletterController@store']);
+    $router->delete('newsletter/unsubscribre/{code}', ['uses' => 'NewsletterController@destroy']);
+
+});
