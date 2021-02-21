@@ -11,6 +11,8 @@ use Illuminate\Support\Arr;
 /**
  * This is used to create Laravel-like route:list command
  * to display all registered routes in table/list just like in Laravel
+ * 
+ * Most of the code comes from https://github.com/laravel/framework/blob/8.x/src/Illuminate/Foundation/Console/RouteListCommand.php
  */
 class RouteListCommand extends Command
 {

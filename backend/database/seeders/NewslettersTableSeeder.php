@@ -2,9 +2,10 @@
 
 namespace Database\Seeders;
 
+use App\Models\Newsletter;
 use Illuminate\Database\Seeder;
 
-class DatabaseSeeder extends Seeder
+class NewslettersTableSeeder extends Seeder
 {
     /**
      * Run the database seeds.
@@ -13,8 +14,6 @@ class DatabaseSeeder extends Seeder
      */
     public function run()
     {
-        $this->call([
-            NewslettersTableSeeder::class
-        ]);
+        $newsletters = Newsletter::factory()->count(10)->create();
     }
 }

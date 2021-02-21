@@ -7,7 +7,7 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 use App\Models\Newsletter;
 
-class NewsController extends Controller
+class NewsletterController extends Controller
 {
 
     /**
@@ -28,7 +28,7 @@ class NewsController extends Controller
      */
     public function showOneNewsletter($id)
     {
-        return response()->json(NewsletterResource::collection(Newsletter::find($id)), 200);
+        return response()->json(new NewsletterResource(Newsletter::find($id)), 200);
     }
 
     /**
@@ -40,13 +40,13 @@ class NewsController extends Controller
     public function store(Request $request)
     {
         $validator = $this->validate($request, [
-            'email' => 'required|email|max:100|distinc|unique:newsletters',
-            'name' => 'required|string'
+            'email' => 'required|email|max:100|unique:newsletters',
+            'name' => 'required|string|max:64'
         ]);
         $newsletter = new Newsletter();
         $newsletter->email = $request->input('email');
-        $newsletter->name = strtoupper($request->input('name'));
-        $newsletter->code = Str::random(40);
+        $newsletter->name = $request->input('name');
+        $newsletter->user_token = Str::random(40);
         if($newsletter->save()) {
             // @TODO - Send E-Mail about subscribing newsletter.
             return response(["status" => true, "message" => "Thank you for registering for the newsletter!"], 201);
@@ -56,22 +56,25 @@ class NewsController extends Controller
     }
 
     /**
-     * Updates an newsletter data by given ID
+     * Updates an newsletter data
      *
-     * @param  int      $id
      * @param  Request  $request
      * @return Response
      */
-    public function update($id, Request $request)
+    public function update(Request $request)
     {
         $validator = $this->validate($request, [
-            'email' => 'email|max:100|distinc|unique:newsletters',
             'name' => 'string',
-            'code' => 'string|min:40|max:40'
+            'user_token' => 'string|min:40|max:40'
         ]);
-
-        $newsletter = Newsletter::findOrFail($id);
-        $newsletter->update($request->all());
+        
+        if($validator)
+        {
+            $newsletter = Newsletter::where('user_token', $request->input('user_token'))->firstorfail();
+            $newsletter->update($request->all());
+        }else{
+            return response(["status" => false, "message" => "Unauthorized"]);
+        }
 
         return response(["status" => true, "message" => "Updated successfully"], 200);
     }
@@ -85,10 +88,10 @@ class NewsController extends Controller
     public function destroy(Request $request)
     {
         $validator = $this->validate($request, [
-            'code' => 'required|string|min:40|max:40'
+            'user_token' => 'required|string|min:40|max:40'
         ]);
 
-        $newsletter = Newsletter::where('code', $request->input('code'))->firstOrFail();
+        $newsletter = Newsletter::where('user_token', $request->input('user_token'))->firstOrFail();
         // @TODO - Send E-Mail about deleting record
         if($newsletter->delete()) {
             return response(["status" => true, "message" => "You have unsubscribed from the newsletter."], 200);
