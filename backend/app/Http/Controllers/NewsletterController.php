@@ -28,7 +28,7 @@ class NewsletterController extends Controller
      */
     public function showOneNewsletter($id)
     {
-        return response()->json(new NewsletterResource(Newsletter::find($id)), 200);
+        return response()->json(new NewsletterResource(Newsletter::findOrFail($id)), 200);
     }
 
     /**
@@ -96,7 +96,7 @@ class NewsletterController extends Controller
         if($newsletter->delete()) {
             return response(["status" => true, "message" => "You have unsubscribed from the newsletter."], 200);
         }else{
-            return response(["status" => false, "message" => sprintf("Error occured! Validation errors: %s", $validator)], 422);
+            return response(["status" => false, "message" => $validator], 422);
         }
         
     }

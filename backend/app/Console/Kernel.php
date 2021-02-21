@@ -13,7 +13,10 @@ class Kernel extends ConsoleKernel
      * @var array
      */
     protected $commands = [
-        'App\Console\Commands\RouteListCommand'
+        'App\Console\Commands\RouteListCommand',
+        'App\Console\Commands\UserAddCommand',
+        'App\Console\Commands\UserListCommand',
+        'App\Console\Commands\UserRemoveCommand',
     ];
 
     /**

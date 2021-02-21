@@ -6,8 +6,9 @@ use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use \Laravel\Lumen\Routing\Router;
 use Illuminate\Support\Str;
-use Closure;
 use Illuminate\Support\Arr;
+use Closure;
+
 /**
  * This is used to create Laravel-like route:list command
  * to display all registered routes in table/list just like in Laravel
@@ -91,14 +92,6 @@ class RouteListCommand extends Command
         $routes = collect($this->routes)->map(function ($route) {
             return $this->getRouteInformation($route);
         })->all();
-
-        // if ($sort = $this->option('sort')) {
-        //     $routes = $this->sortRoutes($sort, $routes);
-        // }
-
-        // if ($this->option('reverse')) {
-        //     $routes = array_reverse($routes);
-        // }
 
         return $this->pluckColumns($routes);
     }
